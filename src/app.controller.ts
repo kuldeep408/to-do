@@ -31,8 +31,10 @@ export class ToDoController {
     return this.toDoService.updateTask(+id, task);
   }
 
+  
   @Delete(':id')
   deleteTask(@Param('id') id: string) {
+    console.log('Deleted !!!!!!')
     return this.toDoService.deleteTask(+id);
   }
 }
