@@ -1,41 +1,25 @@
 import {
   Controller,
   Get,
-  Post,
-  Put,
   Delete,
-  Body,
   Param,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
-import { ToDoService } from './app.service';
+import { AppService } from './app.service';
 
-@Controller('to-do')
-export class ToDoController {
-  constructor(private readonly toDoService: ToDoService) {}
+@Controller('todos')
+export class AppController {
+  constructor(private readonly appService: AppService) {}
 
   @Get()
-  getAllTasks() {
-    return this.toDoService.getAllTasks();
+  getHello(): string {
+    return this.appService.getHello();
   }
 
-  @Post()
-  addTask(@Body() task: { title: string; description: string }) {
-    return this.toDoService.addTask(task);
-  }
-
-  @Put(':id')
-  updateTask(
-    @Param('id') id: number,
-    @Body() task: { title: string; description: string },
-  ) {
-    return this.toDoService.updateTask(+id, task);
-  }
-
-  
   @Delete(':id')
-  deleteTask(@Param('id') id: string) {
-    console.log('Deleted !!!!')
-    // console.log('Deleted !!!!!!')
-    return this.toDoService.deleteTask(+id);
+  @HttpCode(HttpStatus.NO_CONTENT)
+  deleteTodo(@Param('id') id: string): void {
+    this.appService.deleteTodo(id);
   }
 }
