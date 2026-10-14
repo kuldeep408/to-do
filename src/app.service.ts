@@ -1,37 +1,39 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+
+export interface Todo {
+  id: string;
+  title: string;
+  completed: boolean;
+}
 
 @Injectable()
-export class ToDoService {
-  private tasks = [];
-  private taskId = 1;
+export class AppService {
+  private todos: Todo[] = [];
+  private nextId = 1;
 
-  getAllTasks() {
-    return this.tasks;
+  getHello(): string {
+    return 'Hello World!';
   }
 
-  addTask(task: { title: string; description: string }) {
-    const newTask = { id: this.taskId++, ...task };
-    this.tasks.push(newTask);
-    return { message: 'Task added successfully !', task: newTask };
+  create(title: string): Todo {
+    const newTodo: Todo = {
+      id: String(this.nextId++),
+      title,
+      completed: false,
+    };
+    this.todos.push(newTodo);
+    return newTodo;
   }
 
-  updateTask(id: number, updatedTask: { title: string; description: string }) {
-    const task = this.tasks.find(task => task.id === id);
-    if (!task) {
-      return 'Task not found !' 
-    }
-
-    Object.assign(task, updatedTask);
-    return { message: 'Task updated successfully !', task };
+  findAll(): Todo[] {
+    return this.todos;
   }
 
-  deleteTask(id: number) {
-    const index = this.tasks.findIndex(task => task.id === id);
+  deleteTodo(id: string): void {
+    const index = this.todos.findIndex((todo) => todo.id === id);
     if (index === -1) {
-      return 'Task not found!'
+      throw new NotFoundException(`Todo with ID ${id} not found`);
     }
-
-    this.tasks.splice(index, 1);
-    return 'Task deleted successfully !' 
+    this.todos.splice(index, 1);
   }
 }
